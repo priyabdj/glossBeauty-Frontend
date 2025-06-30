@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { products } from '../assets/frontend_assets/assets';
 import { toast } from "react-toastify";
-import { toast as hotToast } from "react-hot-toast";
+
 import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
@@ -77,7 +77,7 @@ const ShopContextProvider = (props) => {
     
     const cartCount = getCartCount();
     if (cartCount === 0) {
-      hotToast.error('Please select products from collection');
+      toast.error('Please select products from collection');
       navigate('/collection');
       return;
     }
