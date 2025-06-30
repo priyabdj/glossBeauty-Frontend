@@ -24,6 +24,26 @@ const Cart = () => {
     setCartData(tempData);
   }, [cartItems]);
 
+  // Handle checkout with authentication check
+  const handleCheckout = () => {
+    console.log("🛒 Checkout button clicked");
+    
+    // Check if user is logged in (using temporary localStorage method)
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    if (isLoggedIn && userEmail) {
+      console.log(" User is logged in, proceeding to checkout:", userEmail);
+      navigate('/place-order');
+    } else {
+      console.log(" User not logged in, redirecting to login");
+      // Store intended destination for after login
+      localStorage.setItem('redirectAfterLogin', '/place-order');
+      // Redirect to login page
+      navigate('/login');
+    }
+  };
+
   return (
     <div className="border-t pt-14 px-4 sm:px-8 lg:px-16">
       {/* Title */}
@@ -95,7 +115,7 @@ const Cart = () => {
           <CartTotal />
           <div className="w-full text-end">
             <button
-              onClick={() => navigate('/place-order')}
+              onClick={handleCheckout}
               className="bg-black text-white text-sm my-8 px-8 py-3"
             >
               PROCEED TO CHECKOUT
