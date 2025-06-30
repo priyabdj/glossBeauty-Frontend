@@ -12,20 +12,44 @@ const Navbar = () => {
 
   //  Check if user is logged in
   useEffect(() => {
+    // TEMPORARY: Check localStorage first (fallback for broken cookie auth)
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    if (isLoggedIn && userEmail) {
+      console.log(" Found user in localStorage:", userEmail);
+      setUser({ email: userEmail, name: userEmail.split('@')[0] }); // Mock user object
+      return;
+    }
+
+    // Original cookie-based auth (will work after backend deployment)
     axiosInstance.get("/auth/profile")
-      .then((res) => setUser(res.data))
-      .catch(() => setUser(null));
+      .then((res) => {
+        if (res.data.success) {
+          setUser(res.data.user);
+        } else {
+          setUser(null);
+        }
+      })
+      .catch(() => {
+        console.log(" Profile request failed, user not logged in");
+        setUser(null);
+      });
   }, []);
 
   //  Handle logout
   const handleLogout = async () => {
     try {
       await axiosInstance.get("/auth/logout");
-      setUser(null);
-      localStorage.clear();
-      navigate("/login", { state: { fromLogout: true }, replace: true });
     } catch (err) {
-      console.error("Logout failed", err);
+      console.error("Logout API failed", err);
+    } finally {
+      // Always clear user state and localStorage
+      setUser(null);
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userEmail');
+      localStorage.clear(); // Clear everything just in case
+      navigate("/login", { state: { fromLogout: true }, replace: true });
     }
   };
 
