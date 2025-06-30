@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/frontend_assets/assets";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
   const navigate = useNavigate();
+  const { clearCart, getCartCount, getCartAmount } = useContext(ShopContext);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -24,14 +26,15 @@ const PlaceOrder = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    console.log("🔒 PlaceOrder - Checking authentication...");
+    console.log("PlaceOrder - Checking authentication...");
     
-    // TEMPORARY: Check localStorage first (fallback for broken cookie auth)
+    
+    
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userEmail = localStorage.getItem('userEmail');
     
     if (!isLoggedIn || !userEmail) {
-      console.log(" User not logged in, redirecting to login");
+      console.log("User not logged in, redirecting to login");
       navigate("/login");
       return;
     }
@@ -43,11 +46,11 @@ const PlaceOrder = () => {
       try {
         const res = await axiosInstance.get("/auth/profile");
         if (!res.data.success) {
-          console.log(" Cookie auth failed, but localStorage auth succeeded");
+          console.log("Cookie auth failed, but localStorage auth succeeded");
           // Don't redirect since localStorage auth passed
         }
       } catch (err) {
-        console.log(" Cookie auth failed, but localStorage auth succeeded");
+        console.log("Cookie auth failed, but localStorage auth succeeded");
         // Don't redirect since localStorage auth passed
       }
     };
@@ -76,8 +79,15 @@ const PlaceOrder = () => {
   };
 
   const handlePlaceOrder = () => {
+    if (getCartCount() === 0) {
+      alert("Your cart is empty. Please add items before placing an order.");
+      navigate("/collection");
+      return;
+    }
+
     if (validate()) {
-      // You can also send this form to backend via axiosInstance.post(...)
+      clearCart();
+    
       navigate("/orders");
     }
   };
@@ -155,7 +165,6 @@ const PlaceOrder = () => {
     </div>
   );
 };
-
 
 const InputField = ({ name, value, onChange, error, type = "text" }) => (
   <div className="w-full border border-gray-300 rounded p-2">

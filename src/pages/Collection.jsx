@@ -62,7 +62,7 @@ const Collection = () => {
 
   return (
     <>
-      {/* Top horizontal line */}
+     
       <div className="h-[1px] bg-gray-200 w-full"></div>
 
       {showSearch && (
@@ -75,14 +75,13 @@ const Collection = () => {
       )}
 
       <div className="flex flex-col lg:flex-row px-4 sm:px-0 py-6 gap-8 pb-14">
-        {/* Filter Sidebar */}
+      
         <div className="w-full sm:w-[240px] border border-gray-200 rounded p-4 h-fit bg-white">
           <p className="mb-4 text-lg font-semibold flex items-center gap-2">
             FILTERS
             <img src={assets.dropdown_icon} alt="dropdown" className="h-3" />
           </p>
 
-          {/* SubCategory Filter */}
           <p className="mb-2 text-sm font-semibold">PRODUCT TYPE</p>
           <div className="flex flex-col gap-2 text-sm text-gray-700 mb-5">
             {['Lipstick', 'Lip Balm', 'Moisturizer', 'Hair Shampoo', 'Conditioner'].map((type) => (
@@ -98,7 +97,6 @@ const Collection = () => {
             ))}
           </div>
 
-          {/* Price Filter */}
           <p className="mb-2 text-lg font-semibold">PRICE (Below ₹{maxPrice})</p>
           <input
             type="range"
@@ -111,7 +109,7 @@ const Collection = () => {
           />
         </div>
 
-        {/* Product Grid */}
+     
         <div className="flex-1">
           <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center text-base sm:text-lg mb-4 gap-3">
             <Title text1={'ALL'} text2={'COLLECTIONS'} />
@@ -137,7 +135,6 @@ const Collection = () => {
             ))}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-10 flex-wrap">
               <button

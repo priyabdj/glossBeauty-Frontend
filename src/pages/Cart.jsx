@@ -24,11 +24,11 @@ const Cart = () => {
     setCartData(tempData);
   }, [cartItems]);
 
-  // Handle checkout with authentication check
+
   const handleCheckout = () => {
-    console.log("🛒 Checkout button clicked");
+    console.log(" Checkout button clicked");
     
-    // Check if user is logged in (using temporary localStorage method)
+  
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userEmail = localStorage.getItem('userEmail');
     
@@ -37,21 +37,20 @@ const Cart = () => {
       navigate('/place-order');
     } else {
       console.log(" User not logged in, redirecting to login");
-      // Store intended destination for after login
+     
       localStorage.setItem('redirectAfterLogin', '/place-order');
-      // Redirect to login page
+     
       navigate('/login');
     }
   };
 
   return (
     <div className="border-t pt-14 px-4 sm:px-8 lg:px-16">
-      {/* Title */}
+     
       <div className="text-2xl mb-6">
         <Title text1={'Your'} text2={'CART'} />
       </div>
 
-      {/* Cart Items */}
       <div className="flex flex-col gap-6">
         {cartData.map((item, index) => {
           const productData = products.find((product) => product._id === item._id);
@@ -61,7 +60,7 @@ const Cart = () => {
               key={index}
               className="py-4 border-b text-gray-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             >
-              {/* Product Info */}
+             
               <div className="flex gap-4 items-start sm:items-center">
                 <img
                   src={productData.image[0]}

@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useEffect } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import { useParams } from 'react-router-dom';
@@ -12,7 +11,7 @@ const Product = () => {
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('')
   const [size, setSize] = useState('')
-  const [activeTab, setActiveTab] = useState('description') // Add state for active tab
+  const [activeTab, setActiveTab] = useState('description') 
 
   const fetchProductData = async () => {
     products.map((item) => {
@@ -32,10 +31,9 @@ const Product = () => {
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
 
-      {/* Product Data */}
       <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
 
-        {/* Product Images */}
+      
         <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
 
           <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
@@ -52,7 +50,6 @@ const Product = () => {
 
         </div>
 
-        {/* Product info */}
         <div className='flex-1'>
           <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
 
@@ -83,6 +80,15 @@ const Product = () => {
           <button
             className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
             onClick={() => {
+             
+              if (!size) {
+            
+                addToCart(productData._id, size);
+               
+                return;
+              }
+              
+             
               addToCart(productData._id, size);
               navigate('/cart');
             }}
@@ -101,7 +107,7 @@ const Product = () => {
 
       </div>
 
-      {/* Description and Review Section */}
+     
       <div className='mt-20'>
 
         <div className='flex'>
@@ -140,7 +146,6 @@ const Product = () => {
 
       </div>
 
-      {/* display Related Products */}
       <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
 
     </div>

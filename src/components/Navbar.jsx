@@ -10,9 +10,8 @@ const Navbar = () => {
   const { setShowSearch, getCartCount } = useContext(ShopContext);
   const navigate = useNavigate();
 
-  //  Check if user is logged in
   useEffect(() => {
-    // TEMPORARY: Check localStorage first (fallback for broken cookie auth)
+   
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userEmail = localStorage.getItem('userEmail');
     
@@ -22,7 +21,6 @@ const Navbar = () => {
       return;
     }
 
-    // Original cookie-based auth (will work after backend deployment)
     axiosInstance.get("/auth/profile")
       .then((res) => {
         if (res.data.success) {
@@ -44,11 +42,11 @@ const Navbar = () => {
     } catch (err) {
       console.error("Logout API failed", err);
     } finally {
-      // Always clear user state and localStorage
+    
       setUser(null);
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userEmail');
-      localStorage.clear(); // Clear everything just in case
+      localStorage.clear(); 
       navigate("/login", { state: { fromLogout: true }, replace: true });
     }
   };
