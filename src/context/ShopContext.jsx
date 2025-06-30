@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { products } from '../assets/frontend_assets/assets';
 import { toast } from "react-toastify";
+import { toast as hotToast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
@@ -72,6 +73,28 @@ const ShopContextProvider = (props) => {
     setCartItems({});
   };
 
+  const handleCheckout = () => {
+    
+    const cartCount = getCartCount();
+    if (cartCount === 0) {
+      hotToast.error('Please select products from collection');
+      navigate('/collection');
+      return;
+    }
+    
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    if (isLoggedIn && userEmail) {
+      console.log("User is logged in, proceeding to checkout:", userEmail);
+      navigate('/place-order');
+    } else {
+      console.log("User not logged in, redirecting to login");
+      localStorage.setItem('redirectAfterLogin', '/place-order');
+      navigate('/login');
+    }
+  };
+
   const value = {
     products,
     currency,
@@ -86,6 +109,7 @@ const ShopContextProvider = (props) => {
     updateQuantity,
     getCartAmount,
     clearCart,
+    handleCheckout,
     navigate
   };
 
