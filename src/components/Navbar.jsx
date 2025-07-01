@@ -1,14 +1,18 @@
 import React, { useState, useContext, useEffect } from "react";
 import { assets } from "../assets/frontend_assets/assets";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate , useLocation} from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import axiosInstance from "../api/axiosInstance";
+import { toast } from "react-toastify";
+
+
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const [user, setUser] = useState(null); 
   const { setShowSearch, getCartCount } = useContext(ShopContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
    
@@ -17,7 +21,7 @@ const Navbar = () => {
     
     if (isLoggedIn && userEmail) {
       console.log(" Found user in localStorage:", userEmail);
-      setUser({ email: userEmail, name: userEmail.split('@')[0] }); // Mock user object
+      setUser({ email: userEmail, name: userEmail.split('@')[0] }); 
       return;
     }
 
@@ -33,16 +37,18 @@ const Navbar = () => {
         console.log(" Profile request failed, user not logged in");
         setUser(null);
       });
-  }, []);
+  }, [location.pathname]);
 
   //  Handle logout
   const handleLogout = async () => {
     try {
       await axiosInstance.get("/auth/logout");
+    
     } catch (err) {
       console.error("Logout API failed", err);
+     
     } finally {
-    
+      toast("Logout Successful")
       setUser(null);
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userEmail');
