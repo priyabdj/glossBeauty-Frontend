@@ -17,23 +17,30 @@ const Navbar = () => {
     
     if (isLoggedIn && userEmail) {
       setUser({ email: userEmail, name: userEmail.split('@')[0] });
-      return;
-    }
-
-    axiosInstance.get("/auth/profile")
-      .then((res) => {
-        if (res.data.success) {
-          setUser(res.data.user);
-        } else {
+    } else {
+      // If not logged in via localStorage, ensure user state is null
+      setUser(null);
+      
+      // Only make API call if we don't have localStorage data
+      axiosInstance.get("/auth/profile")
+        .then((res) => {
+          if (res.data.success) {
+            setUser(res.data.user);
+          } else {
+            setUser(null);
+          }
+        })
+        .catch(() => {
           setUser(null);
-        }
-      })
-      .catch(() => {
-        setUser(null);
-      });
+        });
+    }
   }, [location.pathname]);
 
- const handleLogout = async () => {
+  const isUserLoggedIn = () => {
+    return user && localStorage.getItem('isLoggedIn') === 'true';
+  };
+
+  const handleLogout = async () => {
     // Immediately clear user state to hide logout UI
     setUser(null);
     localStorage.removeItem('isLoggedIn');
@@ -88,16 +95,13 @@ const Navbar = () => {
 />
 
         {/* Profile Dropdown */}
-        {user ? (
+        {isUserLoggedIn() ? (
           <div className="group relative">
             <img src={assets.profile_icon} alt="profile" className="w-5 sm:w-5 cursor-pointer" />
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4 z-50">
               <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
-                <Link to="/place-order" className="hover:text-black">My Profile</Link>
                 <Link to="/orders" className="hover:text-black">Orders</Link>
-                {user && (
-                  <p className="cursor-pointer hover:text-black" onClick={handleLogout}>LogOut</p>
-                )}
+                <p className="cursor-pointer hover:text-black" onClick={handleLogout}>LogOut</p>
               </div>
             </div>
           </div>
@@ -137,9 +141,8 @@ const Navbar = () => {
           <NavLink to="/contact" className="py-2 pl-6 border" onClick={() => setVisible(false)}>CONTACT</NavLink>
           
           {/* Mobile Profile Section */}
-          {user ? (
+          {isUserLoggedIn() ? (
             <>
-              <NavLink to="/place-order" className="py-2 pl-6 border" onClick={() => setVisible(false)}>MY PROFILE</NavLink>
               <NavLink to="/orders" className="py-2 pl-6 border" onClick={() => setVisible(false)}>ORDERS</NavLink>
               <div 
                 className="py-2 pl-6 border cursor-pointer hover:bg-gray-100" 

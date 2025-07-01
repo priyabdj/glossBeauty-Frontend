@@ -5,6 +5,7 @@ import { assets } from "../assets/frontend_assets/assets";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import { toast } from "react-toastify";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
@@ -104,11 +105,11 @@ const PlaceOrder = () => {
       const response = await axiosInstance.post("/orders", orderData);
 
       if (response.data.success) {
-        alert("Order placed successfully!");
+        toast("Order placed successfully!");
         clearCart();
         navigate("/orders");
       } else {
-        alert(response.data.message || "Failed to place order. Please try again.");
+        toast(response.data.message || "Failed to place order. Please try again.");
       }
 
     } catch (error) {
