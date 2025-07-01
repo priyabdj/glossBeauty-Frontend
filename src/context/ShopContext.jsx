@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { products } from '../assets/frontend_assets/assets';
 import { toast } from "react-toastify";
-
+import { toast as hotToast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
@@ -77,7 +77,7 @@ const ShopContextProvider = (props) => {
     
     const cartCount = getCartCount();
     if (cartCount === 0) {
-      toast.error('Please select products from collection');
+      hotToast.error('Please select products from collection');
       navigate('/collection');
       return;
     }
@@ -86,13 +86,33 @@ const ShopContextProvider = (props) => {
     const userEmail = localStorage.getItem('userEmail');
     
     if (isLoggedIn && userEmail) {
-      console.log("User is logged in, proceeding to checkout:", userEmail);
       navigate('/place-order');
     } else {
-      console.log("User not logged in, redirecting to login");
       localStorage.setItem('redirectAfterLogin', '/place-order');
       navigate('/login');
     }
+  };
+
+  const getCartItemsForOrder = () => {
+    const orderItems = [];
+    for (const itemId in cartItems) {
+      const itemInfo = products.find((product) => product._id === itemId);
+      if (!itemInfo) continue;
+
+      for (const size in cartItems[itemId]) {
+        if (cartItems[itemId][size] > 0) {
+          orderItems.push({
+            productId: itemInfo._id,
+            name: itemInfo.name,
+            price: itemInfo.price,
+            image: itemInfo.image[0],
+            size: size,
+            quantity: cartItems[itemId][size]
+          });
+        }
+      }
+    }
+    return orderItems;
   };
 
   const value = {
@@ -110,6 +130,7 @@ const ShopContextProvider = (props) => {
     getCartAmount,
     clearCart,
     handleCheckout,
+    getCartItemsForOrder,
     navigate
   };
 

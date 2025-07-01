@@ -5,11 +5,12 @@ import { assets } from "../assets/frontend_assets/assets";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import { toast } from "react-toastify";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
   const navigate = useNavigate();
-  const { clearCart, getCartCount, getCartAmount } = useContext(ShopContext);
+  const { clearCart, getCartCount, getCartAmount, getCartItemsForOrder, delivery_fee } = useContext(ShopContext);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -26,32 +27,22 @@ const PlaceOrder = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    console.log("PlaceOrder - Checking authentication...");
-    
-    
-    
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userEmail = localStorage.getItem('userEmail');
     
     if (!isLoggedIn || !userEmail) {
-      console.log("User not logged in, redirecting to login");
       navigate("/login");
       return;
     }
 
-    console.log("User authenticated via localStorage:", userEmail);
-
-    // Original cookie-based auth check (for future use when backend is fixed)
     const checkLogin = async () => {
       try {
         const res = await axiosInstance.get("/auth/profile");
         if (!res.data.success) {
-          console.log("Cookie auth failed, but localStorage auth succeeded");
-          // Don't redirect since localStorage auth passed
+          // Continue with localStorage auth
         }
       } catch (err) {
-        console.log("Cookie auth failed, but localStorage auth succeeded");
-        // Don't redirect since localStorage auth passed
+        // Continue with localStorage auth
       }
     };
     checkLogin();
@@ -78,17 +69,49 @@ const PlaceOrder = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (getCartCount() === 0) {
-      alert("Your cart is empty. Please add items before placing an order.");
+      toast("Your cart is empty. Please add items before placing an order.");
       navigate("/collection");
       return;
     }
 
-    if (validate()) {
-      clearCart();
-    
-      navigate("/orders");
+    if (!validate()) {
+      return;
+    }
+
+    try {
+      const orderItems = getCartItemsForOrder();
+      const totalAmount = getCartAmount();
+      const userEmail = localStorage.getItem('userEmail');
+
+      if (!userEmail) {
+        toast("User authentication required. Please login again.");
+        navigate("/login");
+        return;
+      }
+
+      const orderData = {
+        userEmail,
+        items: orderItems,
+        shippingInfo: form,
+        totalAmount,
+        deliveryFee: delivery_fee,
+        paymentMethod: method
+      };
+
+      const response = await axiosInstance.post("/orders", orderData);
+
+      if (response.data.success) {
+        toast("Order placed successfully!");
+        clearCart();
+        navigate("/orders");
+      } else {
+        toast(response.data.message || "Failed to place order. Please try again.");
+      }
+
+    } catch (error) {
+      toast(error.response?.data?.message || "Failed to place order. Please try again.");
     }
   };
 

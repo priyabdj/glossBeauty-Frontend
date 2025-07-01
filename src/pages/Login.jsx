@@ -23,26 +23,17 @@ const Login = () => {
 
     try {
       const res = await axiosInstance.post(endpoint, payload);
-      console.log(" Login Response:", res.data);
-      console.log(" Login Status:", res.status);
       
       if (res.status === 200 || res.status === 201) {
-        console.log(" Login succeeded!");
-        
-    
         if (res.data.message === 'Login successful' || res.data.message === 'Registered successfully') {
-          console.log(" Login/Register successful!");
-          
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('userEmail', email);
           
           const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
           if (redirectAfterLogin) {
-            console.log(" Redirecting to intended destination:", redirectAfterLogin);
-            localStorage.removeItem('redirectAfterLogin'); 
+            localStorage.removeItem('redirectAfterLogin');
             navigate(redirectAfterLogin);
           } else {
-            console.log(" Redirecting to home...");
             navigate('/');
           }
           return;
@@ -50,33 +41,27 @@ const Login = () => {
         
         try {
           const profileRes = await axiosInstance.get('/auth/profile');
-          console.log(" Profile Response:", profileRes.data);
           if (profileRes.data.success) {
             navigate('/');
           } else {
             alert('Authentication failed. Please try again.');
           }
         } catch (profileErr) {
-          console.error(" Profile Error:", profileErr.response?.data);
           alert('Authentication verification failed. Please try again.');
         }
       }
     } catch (err) {
-      console.error(" Login Error:", err.response?.data);
       alert(err.response?.data?.message || "Something went wrong");
     }
   };
 
   useEffect(() => {
-    // TEMPORARY: Check localStorage first
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn) {
-      console.log(" User already logged in (localStorage), redirecting...");
       navigate('/');
       return;
     }
 
-    console.log(" Login.jsx - Making profile request to:", axiosInstance.defaults.baseURL + "/auth/profile");
     axiosInstance.get("/auth/profile")
       .then((res) => {
         if (res.data.success) navigate('/');

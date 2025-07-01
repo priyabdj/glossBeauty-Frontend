@@ -3,9 +3,6 @@ import p_3 from '../frontend_assets/p_3.jpeg'
 import p_4 from '../frontend_assets/p_4.jpeg'
 import p_6 from '../frontend_assets/p_6.jpeg'
 import p_7 from '../frontend_assets/p_7.jpeg'
-
-
-// import p_8 from '../frontend_assets/p_8.jpeg'
 import p_9 from '../frontend_assets/p_9.jpeg'
 import p_10 from '../frontend_assets/p_10.jpeg'
 import p_11 from '../frontend_assets/p_11.jpeg'
@@ -13,8 +10,6 @@ import p_12 from '../frontend_assets/p_12.jpeg'
 import p_13 from '../frontend_assets/p_13.jpeg'
 import p_14 from '../frontend_assets/p_14.jpeg'
 import p_15 from '../frontend_assets/p_15.jpeg'
-
-// import p_16 from '../frontend_assets/p_16.jpeg'
 import p_17 from '../frontend_assets/p_17.jpeg'
 import p_18 from '../frontend_assets/p_18.jpeg'
 import p_19 from '../frontend_assets/p_19.jpeg'
@@ -80,10 +75,7 @@ import m_78 from '../frontend_assets/m_78.jpeg'
 import m_87 from '../frontend_assets/m_87.jpeg'
 import m_98 from '../frontend_assets/m_98.jpeg'
 import m_321 from '../frontend_assets/m_321.jpeg'
-
 import m_432 from '../frontend_assets/m_432.png'
-
-
 import s_6 from '../frontend_assets/s_6.jpeg'
 import s_7 from '../frontend_assets/s_7.jpeg'
 import s_8 from '../frontend_assets/s_8.jpeg'
@@ -96,14 +88,6 @@ import s_14 from '../frontend_assets/s_14.jpeg'
 import s_15 from '../frontend_assets/s_15.jpeg'
 import s_16 from '../frontend_assets/s_16.jpeg'
 import s_17 from '../frontend_assets/s_17.jpeg'
-
-
-
-
-
-
-// import Glamoura from './Glamoura.png'
-// import glamora from './glamora.png'
 import glossBeauty from './glossBeauty.png'
 import about2 from './about2.jpeg'
 import hero_img from './hero_img.png'
@@ -121,7 +105,6 @@ import star_dull_icon from './star_dull_icon.png'
 import star_icon from './star_icon.png'
 import support_img from './support_img.png'
 import menu_icon from './menu_icon.png'
-// import about_img from './about_img.png'
 import contact_img from './contact_img.png'
 import razorpay_logo from './razorpay_logo.png'
 import stripe_logo from './stripe_logo.png'
