@@ -58,15 +58,19 @@ const Login = () => {
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn) {
-      navigate('/');
+      // Only redirect if user is confirmed logged in via localStorage
+      const redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+      if (redirectAfterLogin) {
+        localStorage.removeItem('redirectAfterLogin');
+        navigate(redirectAfterLogin);
+      } else {
+        navigate('/');
+      }
       return;
     }
 
-    axiosInstance.get("/auth/profile")
-      .then((res) => {
-        if (res.data.success) navigate('/');
-      })
-      .catch(() => {});
+    // Don't make automatic API calls that could cause unwanted redirects
+    // Let the user manually log in instead
   }, [navigate]);
 
   useEffect(() => {

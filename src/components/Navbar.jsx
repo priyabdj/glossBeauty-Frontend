@@ -33,16 +33,18 @@ const Navbar = () => {
       });
   }, [location.pathname]);
 
-  const handleLogout = async () => {
+ const handleLogout = async () => {
+    // Immediately clear user state to hide logout UI
+    setUser(null);
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    localStorage.clear();
+    
     try {
       await axiosInstance.get("/auth/logout");
     } catch (err) {
       console.error("Logout API failed", err);
     } finally {
-      setUser(null);
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('userEmail');
-      localStorage.clear();
       navigate("/login", { state: { fromLogout: true }, replace: true });
     }
   };
@@ -93,7 +95,9 @@ const Navbar = () => {
               <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                 <Link to="/place-order" className="hover:text-black">My Profile</Link>
                 <Link to="/orders" className="hover:text-black">Orders</Link>
-                <p className="cursor-pointer hover:text-black" onClick={handleLogout}>LogOut</p>
+                {user && (
+                  <p className="cursor-pointer hover:text-black" onClick={handleLogout}>LogOut</p>
+                )}
               </div>
             </div>
           </div>
@@ -131,6 +135,25 @@ const Navbar = () => {
           <NavLink to="/collection" className="py-2 pl-6 border" onClick={() => setVisible(false)}>COLLECTION</NavLink>
           <NavLink to="/about" className="py-2 pl-6 border" onClick={() => setVisible(false)}>ABOUT</NavLink>
           <NavLink to="/contact" className="py-2 pl-6 border" onClick={() => setVisible(false)}>CONTACT</NavLink>
+          
+          {/* Mobile Profile Section */}
+          {user ? (
+            <>
+              <NavLink to="/place-order" className="py-2 pl-6 border" onClick={() => setVisible(false)}>MY PROFILE</NavLink>
+              <NavLink to="/orders" className="py-2 pl-6 border" onClick={() => setVisible(false)}>ORDERS</NavLink>
+              <div 
+                className="py-2 pl-6 border cursor-pointer hover:bg-gray-100" 
+                onClick={() => {
+                  setVisible(false);
+                  handleLogout();
+                }}
+              >
+                LOGOUT
+              </div>
+            </>
+          ) : (
+            <NavLink to="/login" className="py-2 pl-6 border" onClick={() => setVisible(false)}>LOGIN</NavLink>
+          )}
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import { assets } from "../assets/frontend_assets/assets";
 import axiosInstance from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
-import { toast } from "react-toastify";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
@@ -31,6 +30,7 @@ const PlaceOrder = () => {
     const userEmail = localStorage.getItem('userEmail');
     
     if (!isLoggedIn || !userEmail) {
+      localStorage.setItem('redirectAfterLogin', '/place-order');
       navigate("/login");
       return;
     }
@@ -71,7 +71,7 @@ const PlaceOrder = () => {
 
   const handlePlaceOrder = async () => {
     if (getCartCount() === 0) {
-      toast("Your cart is empty. Please add items before placing an order.");
+      alert("Your cart is empty. Please add items before placing an order.");
       navigate("/collection");
       return;
     }
@@ -86,7 +86,8 @@ const PlaceOrder = () => {
       const userEmail = localStorage.getItem('userEmail');
 
       if (!userEmail) {
-        toast("User authentication required. Please login again.");
+        alert("User authentication required. Please login again.");
+        localStorage.setItem('redirectAfterLogin', '/place-order');
         navigate("/login");
         return;
       }
@@ -103,15 +104,15 @@ const PlaceOrder = () => {
       const response = await axiosInstance.post("/orders", orderData);
 
       if (response.data.success) {
-        toast("Order placed successfully!");
+        alert("Order placed successfully!");
         clearCart();
         navigate("/orders");
       } else {
-        toast(response.data.message || "Failed to place order. Please try again.");
+        alert(response.data.message || "Failed to place order. Please try again.");
       }
 
     } catch (error) {
-      toast(error.response?.data?.message || "Failed to place order. Please try again.");
+      alert(error.response?.data?.message || "Failed to place order. Please try again.");
     }
   };
 
